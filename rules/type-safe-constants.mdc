@@ -1,0 +1,63 @@
+---
+description: Preferir enums o constantes en lugar de strings hardcodeados
+globs: "**/*.{ts,vue}"
+alwaysApply: false
+---
+
+# Type safety: enums y constantes
+
+Usar **enums** o **constantes tipadas** en lugar de strings (o números) literales para evitar typos, facilitar refactors y mejorar autocompletado.
+
+## Regla
+
+- Evitar strings/números "mágicos" repartidos por el código.
+- Definir enums o objetos `as const` en `types/` o junto al dominio y reutilizarlos.
+
+## Ejemplos
+
+### ❌ Evitar: strings hardcodeados
+
+```typescript
+if (status === 'pending') { }
+route.name === 'home'
+emit('submit')
+api.get('/users/active')
+```
+
+### ✅ Preferir: constantes o enums
+
+```typescript
+// types/status.ts o constantes del dominio
+export const Status = {
+  PENDING: 'pending',
+  DONE: 'done',
+} as const
+export type Status = (typeof Status)[keyof typeof Status]
+
+// o enum
+export enum RouteName {
+  Home = 'home',
+  Checklist = 'checklist',
+}
+
+if (status === Status.PENDING) { }
+route.name === RouteName.Home
+emit(EventName.Submit)
+api.get(ApiPath.UsersActive)
+```
+
+### Eventos / payloads
+
+```typescript
+// ❌
+emit('update:modelValue', value)
+
+// ✅
+const ChecklistEvents = { ModelValueUpdate: 'update:modelValue' } as const
+emit(ChecklistEvents.ModelValueUpdate, value)
+```
+
+## Dónde definir
+
+- **Globales** (rutas, roles, estados de API): `src/types/` o `src/constants/`.
+- **Por dominio**: en la carpeta del feature, p. ej. `checklist/constants.ts`.

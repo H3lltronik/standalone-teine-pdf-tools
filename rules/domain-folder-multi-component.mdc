@@ -1,0 +1,70 @@
+---
+description: Agrupar features o componentes múltiples en carpeta de dominio con index de exportación
+globs: src/**/*.vue
+alwaysApply: false
+---
+
+# Carpeta de dominio para múltiples componentes
+
+Cuando un feature o un componente se convierte en **dos o más componentes** relacionados, deben agruparse en una **carpeta de dominio** con nombre descriptivo y un **index** para exportar.
+
+## Criterio
+
+- **1 componente** → puede vivir suelto en `components/` o `views/` según corresponda.
+- **2 o más componentes** del mismo feature/dominio → carpeta con nombre del dominio + `index.ts` (o `index.vue`) que exporte la API pública.
+
+## Estructura
+
+```
+src/
+  components/
+    mi-dominio/           # nombre relacionado al feature
+      index.ts            # re-exporta lo que se consume desde fuera
+      ComponenteA.vue
+      ComponenteB.vue
+      ComponenteC.vue
+      types.ts            # opcional, tipos del dominio
+```
+
+## Ejemplos
+
+### ❌ Evitar: varios componentes sueltos del mismo feature
+
+```
+src/components/
+  UserProfileCard.vue
+  UserProfileHeader.vue
+  UserProfileStats.vue
+```
+
+### ✅ Correcto: carpeta de dominio + index
+
+```
+src/components/
+  user-profile/
+    index.ts
+    UserProfileCard.vue
+    UserProfileHeader.vue
+    UserProfileStats.vue
+```
+
+**index.ts:**
+
+```typescript
+export { default as UserProfileCard } from './UserProfileCard.vue'
+export { default as UserProfileHeader } from './UserProfileHeader.vue'
+export { default as UserProfileStats } from './UserProfileStats.vue'
+```
+
+Consumo desde fuera:
+
+```typescript
+import { UserProfileCard, UserProfileHeader } from '@/components/user-profile'
+```
+
+## Dónde aplicar
+
+- **components**: cuando un feature crece a 2+ componentes en `src/components/`.
+- **views**: si una vista se descompone en 2+ componentes específicos de esa vista, agrupar en carpeta (ej. `views/checklist-editor/` con sus subcomponentes e `index`).
+
+Los componentes genéricos en `components/ui/` no requieren esta regla; aplica a features y dominios de negocio.
