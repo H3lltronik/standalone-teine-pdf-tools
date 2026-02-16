@@ -9,9 +9,6 @@ import {
 } from '../lib/export-annotations-canvas'
 import { jsPDF, type ImageCompression, type ImageFormat } from 'jspdf'
 import * as pdfjsLib from 'pdfjs-dist'
-import { PDF_WORKER_URL } from '../lib/pdf-worker-url'
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER_URL
 
 const EXPORT_SCALE = 2
 const EXPORT_JPEG_QUALITY = 0.92

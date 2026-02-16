@@ -1,4 +1,5 @@
 import './setup-logger'
+import './config/pdf-worker'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import './style.css'

@@ -1,7 +1,0 @@
-# AWS Amplify: ensure .mjs (PDF.js worker) is served with correct MIME type.
-# Without this, some environments may serve it as text/html (SPA fallback) or application/octet-stream.
-customHeaders:
-  - pattern: '**/*.mjs'
-    headers:
-      - key: 'Content-Type'
-        value: 'application/javascript'
