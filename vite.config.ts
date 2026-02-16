@@ -11,6 +11,11 @@ export default defineConfig({
   server: {
     host: true, // listen on 0.0.0.0 so both IPv4 (127.0.0.1) and IPv6 (::1) work
   },
+  optimizeDeps: {
+    // Exclude so Vite does not pre-bundle pdfjs-dist. Pre-bundling would resolve
+    // the internal dynamic import(workerSrc) to a local path and cause 404 for the worker.
+    exclude: ['pdfjs-dist'],
+  },
   plugins: [
     vue(),
     tailwindcss()
