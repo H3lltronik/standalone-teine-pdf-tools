@@ -1,5 +1,13 @@
 <template>
   <div class="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+    <!-- Ad: top -->
+    <GoogleAd
+      v-if="adSlotHome"
+      :slot-id="adSlotHome"
+      format="horizontal"
+      class="mb-8 flex justify-center min-h-[90px]"
+    />
+
     <!-- Hero -->
     <section class="mb-16 text-center">
       <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
@@ -79,6 +87,8 @@
 
 <script setup lang="ts">
 import { useAnalytics } from '@/composables/useAnalytics'
+import GoogleAd from '@/components/ads/GoogleAd.vue'
 
 const analytics = useAnalytics()
+const adSlotHome = (import.meta.env.VITE_ADSENSE_SLOT_HOME as string) || ''
 </script>

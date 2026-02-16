@@ -1,4 +1,5 @@
 import './setup-logger'
+import './lib/pdf-worker'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import './style.css'
@@ -10,6 +11,7 @@ import router from './router'
 import { createPdfOptimizerPlugin } from './plugins/pdfOptimizer'
 import { createAnalyticsPlugin } from './plugins/analytics'
 import { createCompressionMetricsPlugin } from './plugins/compressionMetrics'
+import { createAdSensePlugin } from './plugins/adsense'
 
 const app = createApp(App)
 app.use(createPinia())
@@ -24,4 +26,5 @@ app.use(
     tableName: 'compression_metrics',
   })
 )
+app.use(createAdSensePlugin())
 app.mount('#app')

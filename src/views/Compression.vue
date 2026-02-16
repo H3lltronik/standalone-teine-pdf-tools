@@ -37,6 +37,14 @@
                class="sr-only"
                @change="onFileInputChange" />
 
+        <!-- Ad: above file grid -->
+        <GoogleAd
+          v-if="adSlotCompression"
+          :slot-id="adSlotCompression"
+          format="horizontal"
+          class="mb-4 flex justify-center min-h-[90px]"
+        />
+
         <div
           class="compression-files-virtual-container min-h-[400px] overflow-hidden"
           style="height: calc(100vh - 14rem);"
@@ -120,7 +128,9 @@ import CompressionFileCardsGrid from '../components/compression/CompressionFileC
 import CompressionSidebar from '../components/compression/CompressionSidebar.vue'
 import CompressionSidebarFloatingTab from '../components/compression/CompressionSidebarFloatingTab.vue'
 import CompressionProgress from '../components/compression/CompressionProgress.vue'
+import GoogleAd from '../components/ads/GoogleAd.vue'
 
+const adSlotCompression = (import.meta.env.VITE_ADSENSE_SLOT_COMPRESSION as string) || ''
 const store = useCompressionSettingsStore()
 const { runBatch } = useCompressionBatch()
 const analytics = useAnalytics()

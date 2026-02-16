@@ -61,15 +61,12 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeUnmount, nextTick, computed } from 'vue'
 import * as pdfjsLib from 'pdfjs-dist'
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import type { PageRotation } from '../../types/workspace-editor'
 import { useWorkspaceTabsStore } from '../../stores/workspaceEditorTabs'
 import { useWorkspaceEditorWorkspaceStore } from '../../stores/workspaceEditorWorkspace'
 import { useWorkspaceEditorAnnotationsStore } from '../../stores/workspaceEditorAnnotations'
 import { capturePageToThumbnailUrl } from '../../lib/thumbnail-capture'
 import WorkspaceEditorAnnotationLayer from './WorkspaceEditorAnnotationLayer.vue'
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl
 
 export interface PageViewport {
   width: number

@@ -1,6 +1,4 @@
 import type { App, InjectionKey } from 'vue'
-import * as pdfjsLib from 'pdfjs-dist'
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { PDFReader } from '../implementations/pdf-reader'
 import { PDFWriter } from '../implementations/pdf-writter'
 import { ImageCompressor } from '../implementations/image-compressor'
@@ -41,8 +39,6 @@ export function createPdfOptimizerPlugin(options: PdfOptimizerPluginOptions = {}
     imageCompressor,
     pdfCompressor
   )
-
-  pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl
 
   return {
     install(app: App): void {

@@ -4,12 +4,9 @@ import path from 'path'
 import fs from 'fs'
 import tailwindcss from '@tailwindcss/vite'
 
-// @quicktoolsone/pdf-compress loads pdf.js worker from /pdf.js/pdf.worker.min.mjs.
-// Serve it from the library's dist so the worker version matches (avoids 404 / wrong MIME).
-const pdfWorkerPath = path.resolve(
-  __dirname,
-  'node_modules/@quicktoolsone/pdf-compress/dist/pdf.js/pdf.worker.min.mjs'
-)
+// PDF.js worker: ruta fija /pdf.js/pdf.worker.min.mjs para evitar que en hosting (Amplify, etc.)
+// la petición al asset con hash reciba index.html (SPA rewrite) y devuelva MIME text/html.
+const pdfWorkerSrc = path.resolve(__dirname, 'node_modules/pdfjs-dist/build/pdf.worker.min.mjs')
 
 function servePdfWorker() {
   return {
@@ -20,7 +17,7 @@ function servePdfWorker() {
         const w = res as { setHeader: (n: string, v: string) => void; end: (b: Buffer) => void }
         if (r.method !== 'GET' || !r.url?.startsWith('/pdf.js/pdf.worker')) return next()
         try {
-          const data = fs.readFileSync(pdfWorkerPath)
+          const data = fs.readFileSync(pdfWorkerSrc)
           w.setHeader('Content-Type', 'application/javascript')
           w.setHeader('Cache-Control', 'public, max-age=3600')
           w.end(data)
@@ -32,6 +29,18 @@ function servePdfWorker() {
   }
 }
 
+function copyPdfWorkerToDist() {
+  return {
+    name: 'copy-pdf-worker',
+    closeBundle() {
+      const outFile = path.resolve(__dirname, 'dist/pdf.js/pdf.worker.min.mjs')
+      const outDir = path.dirname(outFile)
+      if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true })
+      fs.copyFileSync(pdfWorkerSrc, outFile)
+    },
+  }
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
@@ -39,6 +48,7 @@ export default defineConfig({
   },
   plugins: [
     servePdfWorker(),
+    copyPdfWorkerToDist(),
     vue(),
     tailwindcss()
   ],
