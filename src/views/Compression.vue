@@ -154,7 +154,9 @@ async function runBatchThenDownload() {
   const filesWithBlob = store.files.filter(
     (f): f is typeof f & { optimizedBlob: Blob } => Boolean(f.optimizedBlob)
   )
-  if (filesWithBlob.length > 0) {
+  if (store.batchError !== null && fileCount > 0) {
+    analytics.trackCompressionBatchCompleted({ file_count: fileCount, success: false })
+  } else if (filesWithBlob.length > 0) {
     analytics.trackCompressionBatchCompleted({
       file_count: filesWithBlob.length,
       success: true,

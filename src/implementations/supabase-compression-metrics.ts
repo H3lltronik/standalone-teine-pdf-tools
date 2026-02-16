@@ -1,21 +1,25 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { ICompressionMetricsService } from '../core/metrics/compression-metrics-service'
-import type { CompressionMetricsPayload } from '../core/metrics/types'
+import type { CompressionMetricsPayload, CompressionFailurePayload } from '../core/metrics/types'
 
 const DEFAULT_TABLE_NAME = 'compression_metrics'
+const DEFAULT_FAILURE_TABLE_NAME = 'compression_failures'
 
 export interface SupabaseCompressionMetricsOptions {
   tableName?: string
+  failureTableName?: string
 }
 
 export class SupabaseCompressionMetricsService implements ICompressionMetricsService {
   private readonly tableName: string
+  private readonly failureTableName: string
 
   constructor(
     private readonly supabase: SupabaseClient,
     options: SupabaseCompressionMetricsOptions = {}
   ) {
     this.tableName = options.tableName ?? DEFAULT_TABLE_NAME
+    this.failureTableName = options.failureTableName ?? DEFAULT_FAILURE_TABLE_NAME
   }
 
   async recordCompressionMetrics(payload: CompressionMetricsPayload): Promise<void> {
@@ -24,6 +28,20 @@ export class SupabaseCompressionMetricsService implements ICompressionMetricsSer
     if (error) {
       console.error('[SupabaseCompressionMetrics] insert failed:', error.message)
       throw error
+    }
+  }
+
+  async recordCompressionFailure(payload: CompressionFailurePayload): Promise<void> {
+    const row: Record<string, unknown> = {
+      error_message: payload.errorMessage,
+      file_index: payload.fileIndex,
+      total_files: payload.totalFiles,
+      ...(payload.phase && { phase: payload.phase }),
+    }
+    const { error } = await this.supabase.from(this.failureTableName).insert(row)
+    if (error) {
+      console.error('[SupabaseCompressionMetrics] failure insert failed:', error.message)
+      // Do not throw: failure recording must not break the app
     }
   }
 

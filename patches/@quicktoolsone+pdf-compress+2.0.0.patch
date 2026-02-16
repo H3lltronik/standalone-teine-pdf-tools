@@ -1,0 +1,13 @@
+diff --git a/node_modules/@quicktoolsone/pdf-compress/dist/index.js b/node_modules/@quicktoolsone/pdf-compress/dist/index.js
+index 4b09f4e..ca5c79a 100644
+--- a/node_modules/@quicktoolsone/pdf-compress/dist/index.js
++++ b/node_modules/@quicktoolsone/pdf-compress/dist/index.js
+@@ -10971,7 +10971,7 @@ async function _0(e, t) {
+     const v = await xt.create(), g = await import("./pdf-DZcCtPG4.js");
+     if (typeof window < "u")
+       try {
+-        g.GlobalWorkerOptions.workerSrc = "/pdf.js/pdf.worker.min.mjs";
++        g.GlobalWorkerOptions.workerSrc = typeof globalThis.PDF_WORKER_URL === "string" && globalThis.PDF_WORKER_URL ? globalThis.PDF_WORKER_URL : "/pdf.js/pdf.worker.min.mjs";
+       } catch {
+         g.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${g.version}/build/pdf.worker.min.mjs`;
+       }

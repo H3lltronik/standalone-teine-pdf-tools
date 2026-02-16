@@ -8,4 +8,7 @@ if (!workerUrl || typeof workerUrl !== 'string' || workerUrl.trim() === '') {
   )
 }
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl.trim()
+const url = workerUrl.trim()
+pdfjsLib.GlobalWorkerOptions.workerSrc = url
+// So @quicktoolsone/pdf-compress (patched) uses this URL instead of its hardcoded path
+globalThis.PDF_WORKER_URL = url

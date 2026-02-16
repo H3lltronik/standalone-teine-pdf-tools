@@ -62,3 +62,11 @@ export interface CompressionMetricsPayload {
   summary: CompressionSummaryMetric
   iterations: CompressionIterationMetric[]
 }
+
+/** Payload for a failed compression run (batch stopped due to error). */
+export interface CompressionFailurePayload {
+  errorMessage: string
+  fileIndex: number
+  totalFiles: number
+  phase?: 'fetch' | 'page_count' | 'optimize' | 'unknown'
+}

@@ -8,7 +8,6 @@ import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import App from './App.vue'
 import router from './router'
-import { createPdfOptimizerPlugin } from './plugins/pdfOptimizer'
 import { createAnalyticsPlugin } from './plugins/analytics'
 import { createCompressionMetricsPlugin } from './plugins/compressionMetrics'
 import { createAdSensePlugin } from './plugins/adsense'
@@ -16,8 +15,18 @@ import { createAdSensePlugin } from './plugins/adsense'
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
+
+let pdfOptimizerPluginInstalled = false
+router.beforeEach(async (to, _from, next) => {
+  if (to.name === 'compression' && !pdfOptimizerPluginInstalled) {
+    const { createPdfOptimizerPlugin } = await import('./plugins/pdfOptimizer')
+    app.use(createPdfOptimizerPlugin())
+    pdfOptimizerPluginInstalled = true
+  }
+  next()
+})
+
 app.use(VueVirtualScroller)
-app.use(createPdfOptimizerPlugin())
 app.use(createAnalyticsPlugin(router))
 app.use(
   createCompressionMetricsPlugin({

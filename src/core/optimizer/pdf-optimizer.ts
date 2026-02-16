@@ -100,6 +100,7 @@ export class PDFOptimizer {
     const rebuiltPdf = await builder.output()
     const reportPdfProgress = (p: number) => onProgress?.(50 + Math.round(p / 2))
     pdf.destroy?.()
+    log.debug(`About to compress PDF`);
     return this.pdfCompressor.compress(rebuiltPdf.getArrayBuffer(), pdfOpts, reportPdfProgress)
   }
 }

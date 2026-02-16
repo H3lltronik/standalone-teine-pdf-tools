@@ -1,9 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '../layouts/DefaultLayout.vue'
-import CompressionsList from '../views/CompressionsList.vue'
-import Compression from '../views/Compression.vue'
-import Home from '../views/Home.vue'
-import WorkspaceEditor from '../views/WorkspaceEditor.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -15,27 +11,27 @@ const router = createRouter({
         {
           path: '',
           name: 'home',
-          component: Home,
+          component: () => import('../views/Home.vue'),
           meta: { breadcrumbs: [] },
         },
         {
           path: 'workspaces/editor',
           name: 'workspace-editor',
-          component: WorkspaceEditor,
+          component: () => import('../views/WorkspaceEditor.vue'),
           meta: { breadcrumbs: [] },
         },
         {
           path: 'compressions',
           name: 'compressions-list',
-          component: CompressionsList,
+          component: () => import('../views/CompressionsList.vue'),
           meta: { breadcrumbs: [] },
         },
         {
           path: 'compression',
           name: 'compression',
-          component: Compression,
+          component: () => import('../views/Compression.vue'),
           meta: { breadcrumbs: [] },
-        }
+        },
       ],
     },
   ],

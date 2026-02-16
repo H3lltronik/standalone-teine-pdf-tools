@@ -4,7 +4,7 @@ import { CompressionMetricsKeys } from '../plugins/compressionMetrics'
 import { PdfSizeTargetOptimizer } from '../core/optimizer/pdf-size-target-optimizer'
 import type { PDFOptimizer } from '../core/optimizer/pdf-optimizer'
 import type { IPdfReader } from '../core/types'
-import type { CompressionMetricsPayload } from '../core/metrics/types'
+import type { CompressionMetricsPayload, CompressionFailurePayload } from '../core/metrics/types'
 import { useCompressionSettingsStore } from '../stores/compressionSettings'
 import { ArrayBufferFetcher } from '../lib/array-buffer-fetcher'
 import { fileWeightUtils } from '../lib/file-weight-utils'
@@ -43,6 +43,7 @@ export function useCompressionBatch() {
     if (files.length === 0) return
 
     store.setCompressing(true)
+    store.setBatchError(null)
     store.clearOptimizedBlobs()
     store.setProgress(0, files.length)
 
@@ -54,8 +55,10 @@ export function useCompressionBatch() {
         store.setFileLoading(file.id, true)
         params?.onProgress?.(i, files.length)
 
+        let failurePhase: CompressionFailurePayload['phase'] = 'fetch'
         try {
           const arrayBuffer = await ArrayBufferFetcher.fromFileSource(file.source)
+          failurePhase = 'page_count'
           const initialSizeBytes = arrayBuffer.byteLength
           const targetBytes = Math.max(1, Math.round(fileWeightUtils.targetWeightToBytes(file.targetWeight)))
 
@@ -63,6 +66,7 @@ export function useCompressionBatch() {
             ? await getPageCount(pdfReader, arrayBuffer)
             : 0
 
+          failurePhase = 'optimize'
           const targetOptimizer = new PdfSizeTargetOptimizer(
             pdfOptimizer,
             arrayBuffer,
@@ -101,6 +105,24 @@ export function useCompressionBatch() {
               log.warn('Failed to record compression metrics: {message}', { message: (err as Error).message })
             })
           }
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err)
+          store.setBatchError(message)
+          if (metricsService) {
+            const failurePayload: CompressionFailurePayload = {
+              errorMessage: message,
+              fileIndex: i,
+              totalFiles: files.length,
+              phase: failurePhase,
+            }
+            metricsService.recordCompressionFailure(failurePayload).catch((e) => {
+              log.warn('Failed to record compression failure metric: {message}', {
+                message: (e as Error).message,
+              })
+            })
+          }
+          log.error('Compression batch failed: {message}', { message })
+          break
         } finally {
           store.setFileLoading(file.id, false)
         }

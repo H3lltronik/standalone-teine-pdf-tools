@@ -22,6 +22,8 @@ export const useCompressionSettingsStore = defineStore('compressionSettings', {
     isCompressing: false,
     /** Batch progress: current completed count and total. Null when no run or after user dismisses. */
     progress: null as { current: number; total: number } | null,
+    /** Error message when batch was cancelled due to failure; cleared when user dismisses or on next run. */
+    batchError: null as string | null,
   }),
 
   getters: {
@@ -78,6 +80,11 @@ export const useCompressionSettingsStore = defineStore('compressionSettings', {
 
     clearProgress() {
       this.progress = null
+      this.batchError = null
+    },
+
+    setBatchError(message: string | null) {
+      this.batchError = message
     },
 
     setFileLoading(fileId: string, value: boolean) {

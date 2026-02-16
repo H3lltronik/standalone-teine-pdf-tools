@@ -1,4 +1,4 @@
-import type { CompressionMetricsPayload } from './types'
+import type { CompressionMetricsPayload, CompressionFailurePayload } from './types'
 
 /**
  * Abstraction for recording compression metrics.
@@ -10,4 +10,10 @@ export interface ICompressionMetricsService {
    * Non-blocking: implementations may fire-and-forget or await; callers should not depend on success.
    */
   recordCompressionMetrics(payload: CompressionMetricsPayload): Promise<void>
+
+  /**
+   * Records a compression batch failure (process cancelled due to error).
+   * Non-blocking: implementations may fire-and-forget or await; callers should not depend on success.
+   */
+  recordCompressionFailure(payload: CompressionFailurePayload): Promise<void>
 }
