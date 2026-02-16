@@ -1,0 +1,6 @@
+# Custom headers para Amplify. Asegura que el worker PDF.js se sirva con MIME correcto.
+customHeaders:
+  - pattern: '/pdf.js/*'
+    headers:
+      - key: 'Content-Type'
+        value: 'application/javascript'
