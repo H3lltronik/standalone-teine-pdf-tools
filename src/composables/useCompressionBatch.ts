@@ -1,5 +1,6 @@
 import { inject } from 'vue'
 import * as pdfjsLib from 'pdfjs-dist'
+import { PDF_WORKER_URL } from '../lib/pdf-worker-url'
 import { PdfOptimizerKeys } from '../plugins/pdfOptimizer'
 import { CompressionMetricsKeys } from '../plugins/compressionMetrics'
 import { PdfSizeTargetOptimizer } from '../core/optimizer/pdf-size-target-optimizer'
@@ -10,6 +11,8 @@ import { useCompressionSettingsStore } from '../stores/compressionSettings'
 import { ArrayBufferFetcher } from '../lib/array-buffer-fetcher'
 import { fileWeightUtils } from '../lib/file-weight-utils'
 import { getLoggerFor } from '../lib/logger'
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER_URL
 
 const log = getLoggerFor('compression-batch')
 
