@@ -34,6 +34,12 @@ export function loadGtag(measurementId: MeasurementId): Promise<void> {
       window.gtag!('config', measurementId, { send_page_view: false })
       resolve()
     }
+    script.onerror = () => {
+      console.warn(
+        '[GA] No se pudo cargar gtag.js. Los eventos no se envían a Google. Comprueba: bloqueadores de anuncios/rastreo, red, o CSP.'
+      )
+      resolve()
+    }
     document.head.appendChild(script)
   })
 }

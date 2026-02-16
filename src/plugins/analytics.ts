@@ -7,8 +7,13 @@ const MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefi
 export function createAnalyticsPlugin(router: Router) {
   return {
     install(_app: App): void {
+      if (!MEASUREMENT_ID?.trim()) {
+        console.warn(
+          '[GA] Analytics desactivado: VITE_GA_MEASUREMENT_ID no está definido. En producción, configúralo en las variables de entorno del despliegue.'
+        )
+      }
       initAnalytics(MEASUREMENT_ID).then(() => {
-        if (import.meta.env.DEV && MEASUREMENT_ID) {
+        if (MEASUREMENT_ID && import.meta.env.DEV) {
           console.info('[GA] Google Analytics activo:', MEASUREMENT_ID)
         }
         router.afterEach((to) => {
