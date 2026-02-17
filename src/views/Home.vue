@@ -31,7 +31,7 @@
         >
           <div class="flex flex-col p-8 sm:p-10">
             <div class="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 transition-colors duration-300 group-hover:bg-emerald-500 group-hover:text-white">
-              <span class="material-symbols-outlined text-3xl">compress</span>
+              <span class="material-symbols-outlined text-3xl" aria-hidden="true">compress</span>
             </div>
             <h2 class="text-2xl font-bold text-slate-900">Comprimir y optimizar</h2>
             <p class="mt-3 text-slate-600">
@@ -39,7 +39,7 @@
             </p>
             <div class="mt-6 flex items-center gap-2 text-primary font-medium">
               <span>Comprimir PDF</span>
-              <span class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1">arrow_forward</span>
+              <span class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
             </div>
           </div>
         </router-link>
@@ -51,7 +51,7 @@
         >
           <div class="flex flex-col p-8 sm:p-10">
             <div class="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
-              <span class="material-symbols-outlined text-3xl">edit_document</span>
+              <span class="material-symbols-outlined text-3xl" aria-hidden="true">edit_document</span>
             </div>
             <h2 class="text-2xl font-bold text-slate-900">Editar y anotar</h2>
             <p class="mt-3 text-slate-600">
@@ -59,7 +59,7 @@
             </p>
             <div class="mt-6 flex items-center gap-2 text-primary font-medium">
               <span>Abrir editor</span>
-              <span class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1">arrow_forward</span>
+              <span class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
             </div>
           </div>
         </router-link>
@@ -71,7 +71,7 @@
       <div class="rounded-2xl border border-slate-200 bg-linear-to-br from-slate-50 to-white p-8 shadow-sm">
         <div class="flex flex-wrap items-start gap-4 sm:flex-nowrap">
           <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-100 text-green-600">
-            <span class="material-symbols-outlined text-2xl">shield</span>
+            <span class="material-symbols-outlined text-2xl" aria-hidden="true">shield</span>
           </div>
           <div class="min-w-0 flex-1">
             <h4 class="text-lg font-semibold text-slate-900">100% en tu navegador</h4>

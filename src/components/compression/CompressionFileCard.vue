@@ -58,7 +58,7 @@
             </span>
             <span class="h-0.5 w-0.5 rounded-full bg-slate-400"
                   aria-hidden />
-            <span class="text-[9px] text-slate-400 uppercase tracking-wide">
+            <span class="text-[9px] text-slate-500 uppercase tracking-wide">
               Original
             </span>
           </div>
@@ -72,17 +72,23 @@
                           :disabled="store.applySameWeightToAll || store.isCompressing"
                           @update:model-value="onTargetWeightChange" />
         <div class="flex justify-between items-center mt-1.5 px-0.5">
-          <span v-if="file.reductionPercent != null"
+          <span v-if="isTargetAboveFileSize"
+                class="text-[10px] text-red-600 font-bold flex items-center gap-1 bg-red-50 px-1.5 py-0.5 rounded">
+            <span class="material-symbols-outlined text-[10px] stroke-2">arrow_upward</span>
+            No se comprime
+            <InfoPopover>
+              El peso del archivo no se incrementa; este archivo no se comprimirá.
+            </InfoPopover>
+          </span>
+          <span v-else-if="file.reductionPercent != null"
                 class="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5 bg-emerald-50 px-1.5 py-0.5 rounded">
-            <span class="material-symbols-outlined text-[10px] stroke-2">
-              arrow_downward
-            </span>
+            <span class="material-symbols-outlined text-[10px] stroke-2">arrow_downward</span>
             {{ file.reductionPercent }}%
           </span>
           <span v-else
-                class="text-[10px] text-slate-400">—</span>
+                class="text-[10px] text-slate-500">—</span>
           <span v-if="store.applySameWeightToAll"
-                class="text-[9px] text-slate-400 flex items-center gap-1">
+                class="text-[9px] text-slate-500 flex items-center gap-1">
             <span class="material-symbols-outlined text-[10px]">link</span>
             Sincronizado
           </span>
@@ -97,6 +103,7 @@ import { computed } from 'vue'
 import { useCompressionSettingsStore } from '../../stores/compressionSettings'
 import { fileWeightUtils } from '../../lib/file-weight-utils'
 import Button from '../ui/Button.vue'
+import InfoPopover from '../ui/InfoPopover.vue'
 import WeightInputGroup from '../Forms/WeightInputGroup.vue'
 import PDFPreview from './PDFPreview.vue'
 import { type CompressionFileItem, type TargetWeight } from '../types/compression'
@@ -109,6 +116,10 @@ const store = useCompressionSettingsStore()
 
 const effectiveTargetWeight = computed<TargetWeight>(() =>
   store.applySameWeightToAll ? store.globalWeight : props.file.targetWeight
+)
+
+const isTargetAboveFileSize = computed(() =>
+  fileWeightUtils.isTargetAboveSize(props.file.sizeBytes, effectiveTargetWeight.value)
 )
 
 function onTargetWeightChange(weight: TargetWeight) {

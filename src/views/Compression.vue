@@ -2,115 +2,97 @@
   <div class="relative flex min-h-0 flex-1 flex-col overflow-hidden">
     <CompressionProgress />
 
-    <main class="min-h-0 flex-1 bg-slate-100/50 overflow-y-auto custom-scrollbar py-6 md:py-8">
-      <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div
-          class="flex items-end justify-between mb-6 pb-4 border-b border-slate-200"
-          data-tour-guide="tour-welcome"
-        >
-          <div>
-            <h1 class="text-xl font-bold text-slate-900 tracking-tight">
-              Archivos para Comprimir
-            </h1>
-            <p class="text-xs text-slate-500 mt-1">
-              Gestiona el tamaño de tus archivos PDF individualmente.
-            </p>
+    <!-- lg+: content + sidebar in flow (content pushed left, max-width; sidebar takes space). Below lg: content only, sidebar is fixed overlay. -->
+    <main class="flex min-h-0 flex-1 overflow-hidden">
+      <div class="flex-1 min-w-0 overflow-y-auto bg-slate-100/50 custom-scrollbar py-6 md:py-8">
+        <div class="mx-auto w-full max-w-4xl 2xl:max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex items-end justify-between mb-6 pb-4 border-b border-slate-200"
+               :data-tour-guide="tourTarget(STEP_ID.WELCOME)">
+            <div>
+              <h1 class="text-xl font-bold text-slate-900 tracking-tight">
+                Archivos para Comprimir
+              </h1>
+              <p class="text-xs text-slate-500 mt-1">
+                Gestiona el tamaño de tus archivos PDF individualmente.
+              </p>
+            </div>
+            <Button variant="ghost"
+                    size="xs"
+                    :disabled="store.isCompressing"
+                    @click="triggerFileInput">
+              <template #icon>
+                <span class="material-symbols-outlined text-[16px]">add</span>
+              </template>
+              Añadir Archivos
+            </Button>
           </div>
-          <Button
-            data-tour-guide="tour-add-files"
-            variant="ghost"
-            size="xs"
-            :disabled="store.isCompressing"
-            @click="triggerFileInput"
-          >
-            <template #icon>
-              <span class="material-symbols-outlined text-[16px]">add</span>
-            </template>
-            Añadir Archivos
-          </Button>
+
+          <label for="compression-file-input" class="sr-only">
+            Seleccionar archivos PDF para comprimir
+          </label>
+          <input ref="fileInputRef"
+                 id="compression-file-input"
+                 type="file"
+                 accept=".pdf,application/pdf"
+                 multiple
+                 class="sr-only"
+                 aria-label="Seleccionar archivos PDF para comprimir"
+                 @change="onFileInputChange" />
+
+          <!-- Ad: above file grid -->
+          <GoogleAd v-if="adSlotCompression"
+                    :slot-id="adSlotCompression"
+                    format="horizontal"
+                    class="mb-4 flex justify-center min-h-[90px]" />
+
+          <div class="compression-files-virtual-container min-h-[400px] overflow-hidden"
+               style="height: calc(100vh - 14rem);"
+               :data-tour-guide="tourTarget(STEP_ID.FILES_GRID)">
+            <CompressionFileCardsGrid @add="triggerFileInput" />
+          </div>
         </div>
+      </div>
 
-        <input ref="fileInputRef"
-               type="file"
-               accept=".pdf,application/pdf"
-               multiple
-               class="sr-only"
-               @change="onFileInputChange" />
-
-        <!-- Ad: above file grid -->
-        <GoogleAd
-          v-if="adSlotCompression"
-          :slot-id="adSlotCompression"
-          format="horizontal"
-          class="mb-4 flex justify-center min-h-[90px]"
-        />
-
-        <div
-          class="compression-files-virtual-container min-h-[400px] overflow-hidden"
-          style="height: calc(100vh - 14rem);"
-          data-tour-guide="tour-files-grid"
-        >
-          <CompressionFileCardsGrid @add="triggerFileInput" />
-        </div>
+      <!-- In-flow sidebar: lg and up. Content is pushed left; sidebar takes w-80. -->
+      <div class="hidden min-h-0 shrink-0 flex-col overflow-hidden transition-[width] duration-200 ease-out lg:flex lg:self-stretch"
+           :class="sidebarOpen ? 'w-80' : 'w-0'">
+        <CompressionSidebar v-show="sidebarOpen"
+                            class="flex min-h-0 flex-1 flex-col w-80 shrink-0 shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.08)]"
+                            @close="sidebarOpen = false"
+                            @compress="runBatchThenDownload" />
       </div>
     </main>
 
-    <!-- Fixed sidebar overlay (below header): top-16 = header height -->
-    <div
-      class="fixed right-0 top-16 bottom-0 z-40 flex flex-col overflow-hidden transition-[width] duration-200 ease-out"
-      :class="sidebarOpen ? 'w-80' : 'w-0'"
-    >
-      <Transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="translate-x-full"
-        enter-to-class="translate-x-0"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="translate-x-0"
-        leave-to-class="translate-x-full"
-      >
-        <CompressionSidebar
-          v-if="sidebarOpen"
-          class="h-full w-80 shrink-0 shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.08)]"
-          @close="sidebarOpen = false"
-          @compress="runBatchThenDownload"
-        />
-      </Transition>
+    <!-- Fixed sidebar overlay: tablet/mobile only. v-show so sidebar stays in DOM for tour targets. -->
+    <div class="fixed right-0 top-16 bottom-0 z-40 flex min-h-0 flex-col overflow-hidden transition-[width] duration-200 ease-out lg:hidden"
+         :class="sidebarOpen ? 'w-80' : 'w-0'">
+      <CompressionSidebar v-show="sidebarOpen"
+                          class="flex min-h-0 flex-1 flex-col w-80 shrink-0 shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.08)]"
+                          @close="sidebarOpen = false"
+                          @compress="runBatchThenDownload" />
     </div>
 
     <!-- Toggle: open sidebar when closed -->
-    <Transition
-      enter-active-class="transition duration-150 ease-out"
-      enter-from-class="opacity-0"
-      enter-to-class="opacity-100"
-      leave-active-class="transition duration-100 ease-in"
-      leave-from-class="opacity-100"
-      leave-to-class="opacity-0"
-    >
-      <CompressionSidebarFloatingTab
-        v-if="!sidebarOpen"
-        aria-label="Abrir panel para configurar y comprimir"
-        @click="sidebarOpen = true"
-      />
+    <Transition enter-active-class="transition duration-150 ease-out"
+                enter-from-class="opacity-0"
+                enter-to-class="opacity-100"
+                leave-active-class="transition duration-100 ease-in"
+                leave-from-class="opacity-100"
+                leave-to-class="opacity-0">
+      <CompressionSidebarFloatingTab v-if="!sidebarOpen"
+                                     aria-label="Abrir panel para configurar y comprimir"
+                                     @click="sidebarOpen = true" />
     </Transition>
 
-    <TourGuideManager
-      ref="tourManagerRef"
-      :steps="compressionTourSteps"
-      :labels="compressionTourLabels"
-      :auto-start="false"
-    />
+    <TourGuideManager ref="tourManagerRef"
+                      :steps="compressionTourSteps"
+                      :labels="compressionTourLabels"
+                      :auto-start="false"
+                      @step-change="(step, _index) => onTourStepChange(step)"
+                      @complete="onTourEnd"
+                      @skip="onTourEnd" />
 
-    <Button
-      variant="ghost"
-      size="xs"
-      class="fixed bottom-4 left-4 z-30 text-slate-500 hover:text-slate-700"
-      @click="startTour"
-    >
-      <template #icon>
-        <span class="material-symbols-outlined text-[16px]">help</span>
-      </template>
-      Ver tour
-    </Button>
+    <CompressionTourButton @click="startTour" />
   </div>
 </template>
 
@@ -118,13 +100,14 @@
 import { ref } from 'vue'
 import { Transition } from 'vue'
 import { TourGuideManager } from 'v-tour-guide'
-import { useCompressionTour } from '../composables/useCompressionTour'
+import { useCompressionTour, STEP_ID, tourTarget } from '../composables/useCompressionTour'
 import { useCompressionSettingsStore } from '../stores/compressionSettings'
 import { useCompressionBatch } from '../composables/useCompressionBatch'
 import { useAnalytics } from '../composables/useAnalytics'
 import { zipService } from '../lib/services/zip-service'
 import Button from '../components/ui/Button.vue'
 import CompressionFileCardsGrid from '../components/compression/CompressionFileCardsGrid.vue'
+import CompressionTourButton from '../components/compression/CompressionTourButton.vue'
 import CompressionSidebar from '../components/compression/CompressionSidebar.vue'
 import CompressionSidebarFloatingTab from '../components/compression/CompressionSidebarFloatingTab.vue'
 import CompressionProgress from '../components/compression/CompressionProgress.vue'
@@ -134,11 +117,17 @@ const adSlotCompression = (import.meta.env.VITE_ADSENSE_SLOT_COMPRESSION as stri
 const store = useCompressionSettingsStore()
 const { runBatch } = useCompressionBatch()
 const analytics = useAnalytics()
-const { steps: compressionTourSteps, labels: compressionTourLabels } = useCompressionTour()
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const sidebarOpen = ref(true)
 const tourManagerRef = ref<InstanceType<typeof TourGuideManager> | null>(null)
+
+const {
+  steps: compressionTourSteps,
+  labels: compressionTourLabels,
+  onTourStepChange,
+  onTourEnd,
+} = useCompressionTour(sidebarOpen)
 
 function startTour() {
   analytics.trackTourStarted({ tour_id: 'compression' })

@@ -2,6 +2,7 @@
   <Button
     variant="placeholder"
     :disabled="disabled"
+    :data-tour-guide="tourGuideTarget"
     @click="emit('add')"
   >
     <div
@@ -12,7 +13,7 @@
     <span class="font-bold text-xs text-slate-600 group-hover:text-primary">
       Agregar otro PDF
     </span>
-    <span class="text-[10px] text-slate-400 mt-1">o arrastra archivos aquí</span>
+    <span class="text-[10px] text-slate-500 mt-1">o arrastra archivos aquí</span>
   </Button>
 </template>
 
@@ -20,7 +21,7 @@
 import Button from '../ui/Button.vue'
 
 withDefaults(
-  defineProps<{ disabled?: boolean }>(),
+  defineProps<{ disabled?: boolean; tourGuideTarget?: string }>(),
   { disabled: false }
 )
 

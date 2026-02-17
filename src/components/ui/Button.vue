@@ -95,7 +95,7 @@ const buttonClasses = computed(() => {
     case 'placeholder':
       return [
         base,
-        'flex-col rounded-xl border-2 border-dashed border-slate-200 p-8 min-h-[300px] w-full bg-white text-slate-400 hover:text-primary hover:border-primary/50 hover:bg-slate-50 group disabled:opacity-50',
+        'flex-col rounded-xl border-2 border-dashed border-slate-200 p-8 min-h-[300px] w-full bg-white text-slate-500 hover:text-primary hover:border-primary/50 hover:bg-slate-50 group disabled:opacity-50',
       ].filter(Boolean).join(' ')
     default:
       return [

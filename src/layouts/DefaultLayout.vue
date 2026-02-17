@@ -1,9 +1,16 @@
 <template>
   <div class="flex h-screen min-h-0 flex-col overflow-hidden bg-linear-to-br from-slate-50 via-blue-50 to-slate-100">
+    <a
+      href="#main-content"
+      class="sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:w-auto focus:h-auto focus:min-w-0 focus:min-h-0 focus:overflow-visible focus:rounded focus:bg-primary focus:px-4 focus:py-2 focus:text-white focus:outline-none focus:[clip:auto]"
+    >
+      Saltar al contenido principal
+    </a>
     <AppHeader :breadcrumbs="breadcrumbs" />
-<main class="min-h-0 flex-1 overflow-y-auto">
+    <main id="main-content" class="flex min-h-0 flex-1 flex-col overflow-hidden" role="main">
       <router-view v-slot="{ Component, route: currentRoute }">
         <TransitionRoot
+          class="flex min-h-0 flex-1 flex-col overflow-hidden"
           :show="transitionVisible"
           appear
           unmount
@@ -18,6 +25,7 @@
         >
           <TransitionChild
             as="div"
+            class="flex min-h-0 flex-1 flex-col overflow-hidden"
             unmount
             enter="transition ease-out duration-200"
             enter-from="opacity-0 translate-y-2"

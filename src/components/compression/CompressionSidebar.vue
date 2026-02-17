@@ -1,8 +1,8 @@
 <template>
-  <aside class="flex h-full min-h-0 w-80 shrink-0 flex-col border-l border-slate-200 bg-white z-30 shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.02)]">
+  <aside class="flex min-h-0 w-80 shrink-0 flex-1 flex-col border-l border-slate-200 bg-white z-30 shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.02)]">
     <div
       class="flex h-10 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4"
-      data-tour-guide="tour-sidebar-config"
+      :data-tour-guide="tourTarget(STEP_ID.SIDEBAR_CONFIG)"
     >
       <span class="text-[11px] font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
         <span class="material-symbols-outlined text-[16px] text-slate-400">
@@ -21,10 +21,10 @@
     </div>
 
     <div class="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-6">
-      <section data-tour-guide="tour-sidebar-weight">
-        <h4 class="text-[11px] font-bold text-slate-900 mb-3 flex items-center gap-2">
+      <section :data-tour-guide="tourTarget(STEP_ID.SIDEBAR_WEIGHT)">
+        <h2 class="text-[11px] font-bold text-slate-900 mb-3 flex items-center gap-2">
           Configuración de Peso Global
-        </h4>
+        </h2>
         <div class="space-y-4">
           <Switch :model-value="store.applySameWeightToAll"
                   label="Aplicar mismo peso a todos"
@@ -44,17 +44,17 @@
 
       <div class="h-px bg-slate-100 w-full" />
 
-      <section data-tour-guide="tour-sidebar-breakdown">
-        <h4 class="text-[11px] font-bold text-slate-900 mb-3">
+      <section :data-tour-guide="tourTarget(STEP_ID.SIDEBAR_BREAKDOWN)">
+        <h2 class="text-[11px] font-bold text-slate-900 mb-3">
           Resumen de Lote
-        </h4>
+        </h2>
         <BreakdownList :items="breakdownItems" />
       </section>
     </div>
 
     <div
       class="shrink-0 border-t border-slate-200 bg-slate-50/30 p-4"
-      data-tour-guide="tour-sidebar-actions"
+      :data-tour-guide="tourTarget(STEP_ID.SIDEBAR_ACTIONS)"
     >
       <div class="grid gap-3">
         <Button
@@ -85,6 +85,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { STEP_ID, tourTarget } from '../../composables/useCompressionTour'
 import { useCompressionSettingsStore } from '../../stores/compressionSettings'
 import { fileWeightUtils } from '../../lib/file-weight-utils'
 import Button from '../ui/Button.vue'
@@ -99,16 +100,21 @@ const emit = defineEmits<{
   compress: []
 }>()
 
-const breakdownItems = computed<{ label: string; value: string }[]>(() => {
+const breakdownItems = computed<{ label: string; value: string; warning?: string }[]>(() => {
   const count = store.files.length
   const totalBytes = store.totalOriginalBytes
   const estimatedBytes = store.estimatedTotalBytes
+  const estimatedAboveOriginal = totalBytes > 0 && estimatedBytes > totalBytes
   return [
     { label: 'Archivos', value: String(count) },
     { label: 'Peso Original', value: totalBytes ? fileWeightUtils.formatBytes(totalBytes) : '—' },
     {
       label: 'Estimado Final',
       value: estimatedBytes ? `~${fileWeightUtils.formatBytes(estimatedBytes)}` : '—',
+      ...(estimatedAboveOriginal && {
+        warning:
+          'El peso total no se incrementa; los archivos cuyo peso deseado supera su tamaño original no se comprimirán.',
+      }),
     },
   ]
 })

@@ -18,7 +18,8 @@
       />
       <NewCompressionPlaceholder
         v-else-if="item.cells[0]?.type === 'placeholder'"
-        :key="cellPlaceholderKey(0)"
+        :key="cellPlaceholderKey(item.id, 0)"
+        :tour-guide-target="ADD_FILES_TOUR_TARGET"
         :disabled="store.isCompressing"
         class="h-full min-h-0"
         @add="emit('add')"
@@ -33,7 +34,8 @@
       />
       <NewCompressionPlaceholder
         v-else-if="item.cells[1]?.type === 'placeholder'"
-        :key="cellPlaceholderKey(1)"
+        :key="cellPlaceholderKey(item.id, 1)"
+        :tour-guide-target="ADD_FILES_TOUR_TARGET"
         :disabled="store.isCompressing"
         class="h-full min-h-0"
         @add="emit('add')"
@@ -48,7 +50,8 @@
       />
       <NewCompressionPlaceholder
         v-else-if="item.cells[2]?.type === 'placeholder'"
-        :key="cellPlaceholderKey(2)"
+        :key="cellPlaceholderKey(item.id, 2)"
+        :tour-guide-target="ADD_FILES_TOUR_TARGET"
         :disabled="store.isCompressing"
         class="h-full min-h-0"
         @add="emit('add')"
@@ -63,8 +66,11 @@ import { computed } from 'vue'
 import { RecycleScroller } from 'vue-virtual-scroller'
 import type { CompressionFileItem } from '../types/compression'
 import { useCompressionSettingsStore } from '../../stores/compressionSettings'
+import { STEP_ID, tourTarget } from '../../composables/useCompressionTour'
 import CompressionFileCard from './CompressionFileCard.vue'
 import NewCompressionPlaceholder from './NewCompressionPlaceholder.vue'
+
+const ADD_FILES_TOUR_TARGET = tourTarget(STEP_ID.ADD_FILES)
 
 const PLACEHOLDER_ID = '__compression_new_file_placeholder__' as const
 const ROW_ID_PREFIX = 'row-' as const
@@ -92,8 +98,8 @@ const rowStyle: { minHeight: string; marginBottom: string } = {
   marginBottom: `${GRID_GAP_PX}px`,
 }
 
-function cellPlaceholderKey(index: 0 | 1 | 2): string {
-  return `${CELL_PLACEHOLDER_KEY_PREFIX}${index}`
+function cellPlaceholderKey(rowId: string, index: 0 | 1 | 2): string {
+  return `${rowId}-${CELL_PLACEHOLDER_KEY_PREFIX}${index}`
 }
 
 function rowId(rowIndex: number): string {

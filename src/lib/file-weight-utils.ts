@@ -56,6 +56,11 @@ export const fileWeightUtils = {
     return Math.round(reduction)
   },
 
+  /** True when target weight (in bytes) is greater than the given file/batch size. */
+  isTargetAboveSize(sizeBytes: number, target: TargetWeight): boolean {
+    return targetWeightToBytes(target) > sizeBytes
+  },
+
   totalOriginalBytes(files: CompressionFileItem[]): number {
     return files.reduce((sum, f) => sum + f.sizeBytes, 0)
   },

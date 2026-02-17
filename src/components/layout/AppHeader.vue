@@ -10,15 +10,22 @@
             aria-label="Abrir menú"
             @click="drawerOpen = true"
           >
-            <span class="material-symbols-outlined">menu</span>
+            <span class="material-symbols-outlined" aria-hidden="true">menu</span>
           </button>
 
           <router-link
             to="/"
             class="flex select-none items-center gap-2"
           >
-            <div class="flex size-8 items-center justify-center rounded bg-primary text-white">
-              <img :src="Logo" alt="Teine Logo" class="h-8 w-8" />
+            <div class="flex h-8 w-auto min-w-8 items-center justify-center rounded bg-primary text-white">
+              <img
+                :src="Logo"
+                alt="Teine Logo"
+                width="303"
+                height="281"
+                decoding="async"
+                class="h-8 w-auto object-contain"
+              />
             </div>
             <span class="whitespace-nowrap text-sm font-bold uppercase tracking-tight text-slate-900">
               {{ appName }}
@@ -59,7 +66,7 @@
               class="shrink-0 text-slate-400"
               aria-hidden="true"
             >
-              <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">chevron_right</span>
             </span>
             <router-link
               v-if="crumb.to"
@@ -90,7 +97,7 @@
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import AsideDrawer from './AsideDrawer.vue'
-import Logo from '../../assets/teine_logo.png'
+import Logo from '../../assets/teine_logo.webp'
 
 const drawerOpen = ref(false)
 

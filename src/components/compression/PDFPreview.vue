@@ -4,6 +4,8 @@
       v-if="src"
       :src="src"
       :alt="alt"
+      loading="lazy"
+      decoding="async"
       class="w-full h-full object-contain object-top"
     />
     <template v-else>

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #137fec;
-  --color-primary-dark: #1d4ed8;
+  --color-primary: #008000;
+  --color-primary-dark: #006600;
 }
 
 /* Shared scrollbar styling – use class "custom-scrollbar" on scroll containers */
