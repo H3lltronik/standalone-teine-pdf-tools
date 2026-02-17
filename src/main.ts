@@ -1,6 +1,7 @@
 import './setup-logger'
 import './config/pdf-worker'
 import { createApp } from 'vue'
+import { createHead } from '@unhead/vue/client'
 import { createPinia } from 'pinia'
 import './style.css'
 import 'v-tour-guide/style.css'
@@ -13,8 +14,11 @@ import { createCompressionMetricsPlugin } from './plugins/compressionMetrics'
 import { createAdSensePlugin } from './plugins/adsense'
 
 const app = createApp(App)
+const head = createHead()
+
 app.use(createPinia())
 app.use(router)
+app.use(head)
 
 let pdfOptimizerPluginInstalled = false
 router.beforeEach(async (to, _from, next) => {

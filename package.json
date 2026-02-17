@@ -15,6 +15,7 @@
     "@quicktoolsone/pdf-compress": "^2.0.0",
     "@supabase/supabase-js": "^2.95.3",
     "@tailwindcss/vite": "^4.1.18",
+    "@unhead/vue": "^2.1.4",
     "browser-image-compression": "^2.0.2",
     "feather-icons": "^4.29.2",
     "jspdf": "^2.5.2",
@@ -30,11 +31,12 @@
     "vue-virtual-scroller": "^2.0.0-beta.8"
   },
   "devDependencies": {
-    "patch-package": "^8.0.1",
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "eslint-plugin-erasable-syntax-only": "^0.4.0",
+    "md-to-pdf": "^5.2.5",
+    "patch-package": "^8.0.1",
     "typescript": "~5.9.3",
     "vite": "^7.2.4",
     "vue-tsc": "^3.1.4"

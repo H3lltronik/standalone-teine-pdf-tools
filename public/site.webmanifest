@@ -1,6 +1,6 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Teine PDF Tools",
+  "short_name": "Teine",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
